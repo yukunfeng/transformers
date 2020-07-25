@@ -34,6 +34,7 @@ from transformers import (
     glue_compute_metrics,
     glue_output_modes,
     glue_tasks_num_labels,
+    get_labels,
     set_seed,
 )
 
@@ -105,7 +106,10 @@ def main():
     set_seed(training_args.seed)
 
     try:
-        num_labels = glue_tasks_num_labels[data_args.task_name]
+        if data_args.task_name in ["sent_classify"]:
+          num_labels = get_labels(data_args.data_dir)
+        else:
+          num_labels = glue_tasks_num_labels[data_args.task_name]
         output_mode = glue_output_modes[data_args.task_name]
     except KeyError:
         raise ValueError("Task not found: %s" % (data_args.task_name))

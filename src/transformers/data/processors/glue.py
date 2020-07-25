@@ -294,6 +294,61 @@ class ColaProcessor(DataProcessor):
             examples.append(InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
         return examples
 
+def get_labels(data_dir):
+    labels = {}
+    for file_dir, _, filenames in os.walk(data_dir):
+        for filename in filenames:
+          if not filename.endswith("tsv"):
+            continue
+          file_path = os.path.join(file_dir, filename)
+          with open(file_path, 'r') as fh:
+            for line in fh:
+              line = linfhstrip()
+              if line == "":
+                continue
+              label = line.split('\t')[0]
+              labels[label] = 1
+    labels = list(labels.keys())
+    return labels
+
+class SentClassifyProcessor(DataProcessor):
+    """Processor for the CoLA data set (GLUE version)."""
+
+    def get_example_from_tensor_dict(self, tensor_dict):
+        """See base class."""
+        return InputExample(
+            tensor_dict["idx"].numpy(),
+            tensor_dict["sentence"].numpy().decode("utf-8"),
+            None,
+            str(tensor_dict["label"].numpy()),
+        )
+
+    def get_train_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_tsv(os.path.join(data_dir, "train.tsv")), "train")
+
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_tsv(os.path.join(data_dir, "dev.tsv")), "dev")
+
+    def get_test_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_tsv(os.path.join(data_dir, "test.tsv")), "test")
+
+    def get_labels(self, data_dir):
+        labels = get_labels(data_dir)
+        return labels
+
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training, dev and test sets."""
+        test_mode = set_type == "test"
+        examples = []
+        for (i, line) in enumerate(lines):
+            guid = "%s-%s" % (set_type, i)
+            label = line[0]
+            text_a = line[1]
+            examples.append(InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+        return examples
 
 class Sst2Processor(DataProcessor):
     """Processor for the SST-2 data set (GLUE version)."""
@@ -566,6 +621,7 @@ glue_tasks_num_labels = {
 }
 
 glue_processors = {
+    "sent_classify": SentClassifyProcessor,
     "cola": ColaProcessor,
     "mnli": MnliProcessor,
     "mnli-mm": MnliMismatchedProcessor,
@@ -579,6 +635,7 @@ glue_processors = {
 }
 
 glue_output_modes = {
+    "sent_classify": "classification",
     "cola": "classification",
     "mnli": "classification",
     "mnli-mm": "classification",
