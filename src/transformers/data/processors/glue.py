@@ -303,7 +303,7 @@ def get_labels(data_dir):
           file_path = os.path.join(file_dir, filename)
           with open(file_path, 'r') as fh:
             for line in fh:
-              line = linfhstrip()
+              line = line.strip()
               if line == "":
                 continue
               label = line.split('\t')[0]

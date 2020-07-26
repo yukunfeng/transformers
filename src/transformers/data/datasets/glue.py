@@ -88,7 +88,7 @@ class GlueDataset(Dataset):
                 mode.value, tokenizer.__class__.__name__, str(args.max_seq_length), args.task_name,
             ),
         )
-        label_list = self.processor.get_labels()
+        label_list = self.processor.get_labels(args.data_dir)
         if args.task_name in ["mnli", "mnli-mm"] and tokenizer.__class__ in (
             RobertaTokenizer,
             RobertaTokenizerFast,

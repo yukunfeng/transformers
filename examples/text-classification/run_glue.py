@@ -34,12 +34,28 @@ from transformers import (
     glue_compute_metrics,
     glue_output_modes,
     glue_tasks_num_labels,
-    get_labels,
     set_seed,
 )
 
-
 logger = logging.getLogger(__name__)
+
+
+def get_labels(data_dir):
+    labels = {}
+    for file_dir, _, filenames in os.walk(data_dir):
+        for filename in filenames:
+          if not filename.endswith("tsv"):
+            continue
+          file_path = os.path.join(file_dir, filename)
+          with open(file_path, 'r') as fh:
+            for line in fh:
+              line = line.strip()
+              if line == "":
+                continue
+              label = line.split('\t')[0]
+              labels[label] = 1
+    labels = list(labels.keys())
+    return labels
 
 
 @dataclass
@@ -107,7 +123,7 @@ def main():
 
     try:
         if data_args.task_name in ["sent_classify"]:
-          num_labels = get_labels(data_args.data_dir)
+          num_labels = len(get_labels(data_args.data_dir))
         else:
           num_labels = glue_tasks_num_labels[data_args.task_name]
         output_mode = glue_output_modes[data_args.task_name]
