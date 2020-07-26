@@ -9,10 +9,14 @@ import sys
 from collections import Counter
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Score a prediction file using the gold labels.')
-    parser.add_argument('gold_file', help='The gold relation file; one relation per line')
-    parser.add_argument('pred_file', help='A prediction file; one relation per line, in the same order as the gold file.')
-    parser.add_argument('no_relation', help='no relation label', default="NA")
+    parser = argparse.ArgumentParser(
+      description='Score a prediction file using the gold labels.',
+      formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    #  parser = argparse.ArgumentParser(description='Score a prediction file using the gold labels.')
+    parser.add_argument('-gold_file', help='The gold relation file; one relation per line')
+    parser.add_argument('-pred_file', help='A prediction file; one relation per line, in the same order as the gold file.')
+    parser.add_argument('-no_relation', help='no relation label', default="NA", required=False)
     args = parser.parse_args()
     return args
 
