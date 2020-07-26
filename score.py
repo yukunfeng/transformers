@@ -123,7 +123,7 @@ if __name__ == "__main__":
           continue
         items = line.split('\t')
         label = items[1]
-        prediction.append(line)
+        prediction.append(label)
     #  prediction = [str(line).rstrip('\n') for line in open(str(args.pred_file))]
 
     # Check that the lengths match
