@@ -337,7 +337,7 @@ class SentPairProcessor(DataProcessor):
         """See base class."""
         return self._create_examples(self._read_tsv(os.path.join(data_dir, "test.tsv")), "test")
 
-    def get_labels(self):
+    def get_labels(self, data_dir):
         """See base class."""
         labels = get_labels(data_dir)
         return labels
