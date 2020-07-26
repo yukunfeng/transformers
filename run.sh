@@ -14,9 +14,10 @@ python ./examples/text-classification/run_glue.py \
   --max_seq_length 128 \
   --per_device_train_batch_size 32 \
   --learning_rate 2e-5 \
-  --num_train_epochs 3.0 \
+  --num_train_epochs 10.0 \
   --output_dir ./${task_name}_output/
 
+python score.py -gold_file glue_data/sent_classify/test.tsv -pred_file sent_classify_output/test_results_sent_classify.txt
 python ~/env_config/sending_emails.py -c '2020-07-25 21:15 zp classify'
 # task_name=MRPC
 # task_name=CoLA
