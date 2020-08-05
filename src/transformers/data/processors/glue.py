@@ -424,8 +424,8 @@ class FewrelProcessor(DataProcessor):
           h_name = sent[h[1]:h[2]]
           t_name = sent[t[1]:t[2]]
           new_sent = sent[:h[1]] + "# "+h_name+" #" + sent[h[2]:t[1]] + "$ "+t_name+" $" + sent[t[2]:]
-          new_sent = f"{label}\t{new_sent}"
-          lines.append(new_sent)
+          lines.append([label, new_sent])
+        return lines
 
     def get_train_examples(self, data_dir):
         """See base class."""
