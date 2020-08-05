@@ -17,6 +17,7 @@
 
 import logging
 import os
+import json
 from dataclasses import asdict
 from enum import Enum
 from typing import List, Optional, Union
@@ -393,6 +394,78 @@ class SentClassifyProcessor(DataProcessor):
             examples.append(InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
         return examples
 
+
+class FewrelProcessor(DataProcessor):
+    """Processor for the CoLA data set (GLUE version)."""
+
+    def get_example_from_tensor_dict(self, tensor_dict):
+        """See base class."""
+        return InputExample(
+            tensor_dict["idx"].numpy(),
+            tensor_dict["sentence"].numpy().decode("utf-8"),
+            None,
+            str(tensor_dict["label"].numpy()),
+        )
+
+    def _read_json(sel, file_path):
+      with open(file_path, 'r') as myfile:
+        data = json.loads(myfile.read())
+        lines = []
+        for item in data:
+          sent_key = 'text'
+          if sent_key not in item:
+            sent_key = 'sent'
+          sent = item[sent_key]
+          ents = item['ents']
+          label = item['label']
+          # Sort by position (ascending).
+          ents = sorted(ents, key=lambda x: x[1])
+          h, t = ents # Head and tails.
+          h_name = sent[h[1]:h[2]]
+          t_name = sent[t[1]:t[2]]
+          new_sent = sent[:h[1]] + "# "+h_name+" #" + sent[h[2]:t[1]] + "$ "+t_name+" $" + sent[t[2]:]
+          new_sent = f"{label}\t{new_sent}"
+          lines.append(new_sent)
+
+    def get_train_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_json(os.path.join(data_dir, "train.json")), "train")
+
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_json(os.path.join(data_dir, "dev.json")), "dev")
+
+    def get_test_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_json(os.path.join(data_dir, "test.json")), "test")
+
+    @classmethod
+    def get_labels(cls, data_dir):
+        labels = {}
+        for file_dir, _, filenames in os.walk(data_dir):
+            for filename in filenames:
+              if not filename.endswith("json"):
+                continue
+              file_path = os.path.join(file_dir, filename)
+              with open(file_path, 'r') as myfile:
+                data = json.loads(myfile.read())
+                for item in data:
+                  label = item['label']
+                  labels[label] = 1
+        return list(labels.keys())
+
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training, dev and test sets."""
+        test_mode = set_type == "test"
+        examples = []
+        for (i, line) in enumerate(lines):
+            guid = "%s-%s" % (set_type, i)
+            label = line[0]
+            text_a = line[1]
+            examples.append(InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+        return examples
+
+
 class Sst2Processor(DataProcessor):
     """Processor for the SST-2 data set (GLUE version)."""
 
@@ -664,6 +737,7 @@ glue_tasks_num_labels = {
 }
 
 glue_processors = {
+    "fewrel": FewrelProcessor,
     "sent_pair": SentPairProcessor,
     "sent_classify": SentClassifyProcessor,
     "cola": ColaProcessor,
@@ -679,6 +753,7 @@ glue_processors = {
 }
 
 glue_output_modes = {
+    "fewrel": "classification",
     "sent_pair": "classification",
     "sent_classify": "classification",
     "cola": "classification",
