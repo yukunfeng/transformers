@@ -6,6 +6,7 @@ Score the predictions with gold labels, using precision, recall and F1 metrics.
 
 import argparse
 import sys
+import json
 from collections import Counter
 
 def parse_arguments():
@@ -102,15 +103,22 @@ if __name__ == "__main__":
     # Parse the arguments from stdin
     args = parse_arguments()
     key = []
-    with open(args.gold_file, 'r') as fh:
-      for line in fh:
-        line = line.strip()
-        # Skip empty lines
-        if line == "":
-          continue
-        items = line.split('\t')
-        label = items[0]
-        key.append(label) 
+    if args.gold_file.endswith('json'):
+      with open(args.gold_file, 'r') as myfile:
+        data = json.loads(myfile.read())
+        for item in data:
+          label = item['label']
+          key.append(label)
+    elif args.gold_file.endswith('tsv'):
+      with open(args.gold_file, 'r') as fh:
+        for line in fh:
+          line = line.strip()
+          # Skip empty lines
+          if line == "":
+            continue
+          items = line.split('\t')
+          label = items[0]
+          key.append(label) 
     #  key = [str(line).rstrip('\n') for line in open(str(args.gold_file))]
 
     prediction = []
