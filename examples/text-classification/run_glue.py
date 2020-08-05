@@ -35,6 +35,7 @@ from transformers import (
     glue_output_modes,
     glue_tasks_num_labels,
     set_seed,
+    glue_processors,
 )
 
 logger = logging.getLogger(__name__)
@@ -124,6 +125,8 @@ def main():
     try:
         if data_args.task_name in ["sent_classify", "sent_pair"]:
           num_labels = len(get_labels(data_args.data_dir))
+        elif data_args.task_name in ["fewrel"]:
+          num_labels = len(glue_processors[data_args.task_name].get_labels(data_args.data_dir))
         else:
           num_labels = glue_tasks_num_labels[data_args.task_name]
         output_mode = glue_output_modes[data_args.task_name]
