@@ -80,7 +80,8 @@ if _has_sklearn:
         elif task_name == "sent_pair":
             return acc_and_f1(preds, labels)
         else:
-            raise KeyError(task_name)
+            return acc_and_f1(preds, labels)
+            #  raise KeyError(task_name)
 
     def xnli_compute_metrics(task_name, preds, labels):
         assert len(preds) == len(labels)
