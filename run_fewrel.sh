@@ -19,6 +19,10 @@ python ./examples/text-classification/run_glue.py \
   --num_train_epochs 10 \
   --save_steps 2000 \
   --save_total_limit 1 \
+  --logging_steps 1000 \
+  --evaluate_during_training \
+  --eval_steps 1000 \
+  --warmup_steps 500 \
   --output_dir $output_dir
 
 python score.py -gold_file "$data_dir/test.json" -pred_file "$output_dir/test_results_${task_name}.txt"
