@@ -1,5 +1,5 @@
 set -x
-export GLUE_DIR=/home/lr/yukun/kg-bert/ERNIE/data/
+export GLUE_DIR=./glue_data/
 
 task_name="tacred"
 data_dir="$GLUE_DIR/$task_name"
@@ -16,34 +16,32 @@ do
     for warmup in "${warmups[@]}"
     do
 
-      # rm -rf $output_dir
-      # python ./examples/text-classification/run_glue.py \
-        # --model_name_or_path 'roberta-large' \
-        # --task_name $task_name \
-        # --do_train \
-        # --do_eval \
-        # --do_predict \
-        # --data_dir $data_dir \
-        # --max_seq_length 184 \
-        # --per_device_train_batch_size $batch_size \
-        # --learning_rate $lr \
-        # --num_train_epochs 2 \
-        # --save_steps 2000 \
-        # --save_total_limit 1 \
-        # --logging_steps 1000 \
-        # --evaluate_during_training \
-        # --eval_steps 1000 \
-        # --warmup_steps $warmup \
-        # --seed 42 \
-        # --output_dir $output_dir
+      rm -rf $output_dir
+      python ./examples/text-classification/run_glue.py \
+        --model_name_or_path 'roberta-large' \
+        --task_name $task_name \
+        --do_train \
+        --do_eval \
+        --do_predict \
+        --data_dir $data_dir \
+        --max_seq_length 184 \
+        --per_device_train_batch_size $batch_size \
+        --learning_rate $lr \
+        --num_train_epochs 5 \
+        --save_steps 2000 \
+        --save_total_limit 1 \
+        --logging_steps 1000 \
+        --evaluate_during_training \
+        --eval_steps 4000 \
+        --warmup_steps $warmup \
+        --seed 42 \
+        --output_dir $output_dir
 
       echo "batch_size: $batch_size lr:$lr warmup:$warmup"
       python score.py -gold_file "$data_dir/test.json" -pred_file $pred_file
-      # python ~/env_config/sending_emails.py -c "succ: $? tacred. Warmup finished"
-      exit 0 
     done
-    exit 0
     python ~/env_config/sending_emails.py -c "succ: $? tacred. Warmup finished"
+    exit 0
   done
 done
 

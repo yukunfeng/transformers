@@ -140,4 +140,4 @@ if __name__ == "__main__":
         exit(1)
     
     # Score the predictions
-    score(key, prediction, args.no_relation, verbose=True)
+    score(key, prediction, args.no_relation, verbose=False)
