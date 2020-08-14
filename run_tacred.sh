@@ -3,8 +3,8 @@ export GLUE_DIR=/home/lr/yukun/kg-bert/ERNIE/data/
 
 task_name="fewrel"
 data_dir="$GLUE_DIR/tacred"
-pred_file="$output_dir/test_results_tacred.txt"
 output_dir="tacred_output/"
+pred_file="$output_dir/test_results_${task_name}.txt"
 
 batch_sizes=(32 16)
 lrs=(1e-5 2e-5 5e-6 1e-6)
@@ -16,30 +16,30 @@ do
     for warmup in "${warmups[@]}"
     do
 
-      rm -rf $output_dir
-      python ./examples/text-classification/run_glue.py \
-        --model_name_or_path 'roberta-large' \
-        --task_name $task_name \
-        --do_train \
-        --do_eval \
-        --do_predict \
-        --data_dir $data_dir \
-        --max_seq_length 184 \
-        --per_device_train_batch_size $batch_size \
-        --learning_rate $lr \
-        --num_train_epochs 2 \
-        --save_steps 2000 \
-        --save_total_limit 1 \
-        --logging_steps 1000 \
-        --evaluate_during_training \
-        --eval_steps 1000 \
-        --warmup_steps $warmup \
-        --seed 42 \
-        --output_dir $output_dir
+      # rm -rf $output_dir
+      # python ./examples/text-classification/run_glue.py \
+        # --model_name_or_path 'roberta-large' \
+        # --task_name $task_name \
+        # --do_train \
+        # --do_eval \
+        # --do_predict \
+        # --data_dir $data_dir \
+        # --max_seq_length 184 \
+        # --per_device_train_batch_size $batch_size \
+        # --learning_rate $lr \
+        # --num_train_epochs 2 \
+        # --save_steps 2000 \
+        # --save_total_limit 1 \
+        # --logging_steps 1000 \
+        # --evaluate_during_training \
+        # --eval_steps 1000 \
+        # --warmup_steps $warmup \
+        # --seed 42 \
+        # --output_dir $output_dir
 
       echo "batch_size: $batch_size lr:$lr warmup:$warmup"
       python score.py -gold_file "$data_dir/test.json" -pred_file $pred_file
-      python ~/env_config/sending_emails.py -c "succ: $? tacred. Warmup finished"
+      # python ~/env_config/sending_emails.py -c "succ: $? tacred. Warmup finished"
       exit 0 
     done
     exit 0
