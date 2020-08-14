@@ -34,6 +34,7 @@ do
           --evaluate_during_training \
           --eval_steps 4000 \
           --warmup_steps $warmup \
+          --seed 42 \
           --output_dir $output_dir
 
         echo "batch_size: $batch_size lr:$lr warmup:$warmup"
