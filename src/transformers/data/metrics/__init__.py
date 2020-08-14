@@ -42,6 +42,18 @@ if _has_sklearn:
             "acc_and_f1": (acc + f1) / 2,
         }
 
+    def fewrel_f1(preds, labels):
+        included_labels = {}
+        for label in labels:
+          if label != "NA":
+             included_labels[label] = 0
+        included_labels = list(included_labels.keys())
+        f1 = f1_score(y_true=labels, y_pred=preds, labels=included_labels, average='micro')
+
+        return {
+            "fewrel_f1": f1
+        }
+
     def pearson_and_spearman(preds, labels):
         pearson_corr = pearsonr(preds, labels)[0]
         spearman_corr = spearmanr(preds, labels)[0]
@@ -79,9 +91,10 @@ if _has_sklearn:
             return acc_and_f1(preds, labels)
         elif task_name == "sent_pair":
             return acc_and_f1(preds, labels)
+        elif task_name == "fewrel":
+            return fewrel_f1(preds, labels)
         else:
-            return acc_and_f1(preds, labels)
-            #  raise KeyError(task_name)
+            raise KeyError(task_name)
 
     def xnli_compute_metrics(task_name, preds, labels):
         assert len(preds) == len(labels)
