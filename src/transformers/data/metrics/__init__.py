@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from collections import Counter
+
 try:
     from scipy.stats import pearsonr, spearmanr
     from sklearn.metrics import matthews_corrcoef, f1_score
@@ -52,6 +54,20 @@ if _has_sklearn:
 
         return {
             "fewrel_f1": f1
+        }
+
+    def tacred_f1(preds, labels):
+        label_counter = Counter(labels)
+        NA_label = label_counter.most_common(n=1)[0][0]
+        included_labels = {}
+        for label in labels:
+          if label != NA_label:
+             included_labels[label] = 0
+        included_labels = list(included_labels.keys())
+        f1 = f1_score(y_true=labels, y_pred=preds, labels=included_labels, average='micro')
+
+        return {
+            "tacred_f1": f1
         }
 
     def pearson_and_spearman(preds, labels):
@@ -93,6 +109,8 @@ if _has_sklearn:
             return acc_and_f1(preds, labels)
         elif task_name == "fewrel":
             return fewrel_f1(preds, labels)
+        elif task_name == "tacred":
+            return tacred_f1(preds, labels)
         else:
             raise KeyError(task_name)
 

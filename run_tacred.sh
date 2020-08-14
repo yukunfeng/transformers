@@ -1,9 +1,9 @@
 set -x
 export GLUE_DIR=/home/lr/yukun/kg-bert/ERNIE/data/
 
-task_name="fewrel"
-data_dir="$GLUE_DIR/tacred"
-output_dir="tacred_output/"
+task_name="tacred"
+data_dir="$GLUE_DIR/$task_name"
+output_dir="${task_name}_output/"
 pred_file="$output_dir/test_results_${task_name}.txt"
 
 batch_sizes=(32 16)

@@ -738,6 +738,7 @@ glue_tasks_num_labels = {
 }
 
 glue_processors = {
+    "tacred": FewrelProcessor,
     "fewrel": FewrelProcessor,
     "sent_pair": SentPairProcessor,
     "sent_classify": SentClassifyProcessor,
@@ -754,6 +755,7 @@ glue_processors = {
 }
 
 glue_output_modes = {
+    "tacred": "classification",
     "fewrel": "classification",
     "sent_pair": "classification",
     "sent_classify": "classification",

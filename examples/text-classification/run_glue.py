@@ -125,7 +125,7 @@ def main():
     try:
         if data_args.task_name in ["sent_classify", "sent_pair"]:
           num_labels = len(get_labels(data_args.data_dir))
-        elif data_args.task_name in ["fewrel"]:
+        elif data_args.task_name in ["fewrel", "tacred"]:
           num_labels = len(glue_processors[data_args.task_name].get_labels(data_args.data_dir))
         else:
           num_labels = glue_tasks_num_labels[data_args.task_name]
