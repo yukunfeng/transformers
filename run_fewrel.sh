@@ -30,7 +30,7 @@ do
               --do_eval \
               --do_predict \
               --data_dir $data_dir \
-              --max_seq_length 256 \
+              --max_seq_length $max_seq_len \
               --per_device_train_batch_size $batch_size \
               --learning_rate $lr \
               --num_train_epochs 10 \
