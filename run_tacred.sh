@@ -7,8 +7,10 @@ output_dir="${task_name}_output/"
 pred_file="$output_dir/test_results_${task_name}.txt"
 
 batch_sizes=(32 16)
-lrs=(1e-5 2e-5 5e-6 1e-6)
-warmups=(0 200 500 800 1000)
+# lrs=(1e-5 2e-5 5e-6 1e-6)
+lrs=(2e-5 5e-6 1e-6)
+# warmups=(0 200 500 800 1000)
+warmups=(200)
 for batch_size in "${batch_sizes[@]}"
 do
   for lr in "${lrs[@]}"
@@ -18,7 +20,7 @@ do
 
       rm -rf $output_dir
       python ./examples/text-classification/run_glue.py \
-        --model_name_or_path 'roberta-large' \
+        --model_name_or_path 'roberta-base' \
         --task_name $task_name \
         --do_train \
         --do_eval \
@@ -40,9 +42,8 @@ do
       echo "batch_size: $batch_size lr:$lr warmup:$warmup"
       python score.py -gold_file "$data_dir/test.json" -pred_file $pred_file
     done
-    python ~/env_config/sending_emails.py -c "succ: $? tacred. Warmup finished"
-    exit 0
   done
 done
 
+python ~/env_config/sending_emails.py -c "succ: $? tacred. finished"
 
