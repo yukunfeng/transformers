@@ -42,9 +42,9 @@ do
               --warmup_steps $warmup \
               --seed 42 \
               --output_dir $output_dir
+            echo "batch_size: $batch_size lr:$lr warmup:$warmup max_seq_len: $max_seq_len"
+            python score.py -gold_file "$data_dir/test.json" -pred_file $pred_file
         done
-        echo "batch_size: $batch_size lr:$lr warmup:$warmup max_seq_len: $max_seq_len"
-        python score.py -gold_file "$data_dir/test.json" -pred_file $pred_file
         python ~/env_config/sending_emails.py -c "succ: $? fewrel. lr finished"
         exit 0
     done
