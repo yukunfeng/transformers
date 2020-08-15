@@ -6,12 +6,13 @@ data_dir="$GLUE_DIR/$task_name"
 output_dir="${task_name}_output/"
 pred_file="$output_dir/test_results_${task_name}.txt"
 
-batch_sizes=(32 16)
+batch_sizes=(32)
 # lrs=(1e-5 2e-5 5e-6 1e-6)
-lrs=(2e-5 5e-6 1e-6)
+# lrs=(2e-5 5e-6 1e-6)
+lrs=(5e-5 7e-5 9e-5 1e-4)
 # warmups=(0 200 500 800 1000)
 warmups=(500)
-max_seq_lens=(324 256 128)
+max_seq_lens=(256)
 
 for batch_size in "${batch_sizes[@]}"
 do
@@ -45,11 +46,8 @@ do
             echo "batch_size: $batch_size lr:$lr warmup:$warmup max_seq_len: $max_seq_len"
             python score.py -gold_file "$data_dir/test.json" -pred_file $pred_file
         done
-        python ~/env_config/sending_emails.py -c "succ: $? fewrel. lr finished"
-        exit 0
     done
   done
 done
 
-
-
+python ~/env_config/sending_emails.py -c "succ: $? fewrel. lr finished"
