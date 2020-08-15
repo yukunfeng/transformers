@@ -24,7 +24,7 @@ do
             rm -rf $output_dir
             rm -rf glue_data/${task_name}/cached_*
             python ./examples/text-classification/run_glue.py \
-              --model_name_or_path 'roberta-large' \
+              --model_name_or_path 'roberta-base' \
               --task_name $task_name \
               --do_train \
               --do_eval \
