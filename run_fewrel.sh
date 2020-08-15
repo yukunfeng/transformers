@@ -22,6 +22,7 @@ do
         for max_seq_len in "${max_seq_lens[@]}"
         do
             rm -rf $output_dir
+            rm -rf glue_data/${task_name}/cached_*
             python ./examples/text-classification/run_glue.py \
               --model_name_or_path 'roberta-large' \
               --task_name $task_name \
