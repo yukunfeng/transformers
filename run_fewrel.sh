@@ -6,10 +6,12 @@ data_dir="$GLUE_DIR/$task_name"
 output_dir="${task_name}_output/"
 pred_file="$output_dir/test_results_${task_name}.txt"
 
-batch_sizes=(32)
+# batch_sizes=(32)
+batch_sizes=(16)
 # lrs=(1e-5 2e-5 5e-6 1e-6)
 # lrs=(2e-5 5e-6 1e-6)
-lrs=(5e-5 7e-5 9e-5 1e-4)
+# lrs=(5e-5 7e-5 9e-5 1e-4)
+lrs=(5e-5)
 # warmups=(0 200 500 800 1000)
 warmups=(500)
 max_seq_lens=(256)
